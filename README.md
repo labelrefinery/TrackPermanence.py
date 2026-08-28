@@ -74,6 +74,7 @@ uv sync
 uv run pytest
 uv run python -m trackpermanence.train --config configs/smoke.yaml        # both modules
 uv run python scripts/export_mojo.py --run runs/smoke --out export        # weights.lft + parity samples
+uv run python scripts/export_mojo.py --run runs/smoke --out export/random --random   # random-weights parity set
 uv run python scripts/make_demo_csv.py --gap 4.0                          # examples/{occluded,truth}.csv
 uv run python -m trackpermanence.infer --run runs/smoke examples/occluded.csv examples/completed.csv
 ```
@@ -85,8 +86,9 @@ global coordinates — the same format
 produces), greedily links terminated tracklets to later ones by Re-ID score,
 fills every gap with the completion network at the scene frame rate, and
 writes merged tracks back out. On the demo scene (41-track AV2 val log, one
-track cut by a 4 s occlusion) it recovers the cut track with 0.12 m mean
-error over all 157 poses.
+track cut by a 4 s occlusion) it recovers the cut track with 8 mm mean error
+over all 157 poses (one extra, unverifiable link between two other tracks is
+also made at the default 0.5 threshold — smoke-scale Re-ID calibration).
 
 ## License
 

@@ -88,9 +88,18 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--run", type=Path, default=Path("runs/smoke"))
     ap.add_argument("--out", type=Path, default=Path("export"))
     ap.add_argument("--samples", type=int, default=3)
+    ap.add_argument("--random", action="store_true",
+                    help="export freshly initialised models (all heads non-zero) to stress-test op parity")
     args = ap.parse_args(argv)
     args.out.mkdir(parents=True, exist_ok=True)
     reid, comp, cfg = load_run(args.run)
+    if args.random:
+        torch.manual_seed(0)
+        reid, comp = build_models(cfg)
+        for head in (comp.init_head, comp.ref2):
+            torch.nn.init.normal_(head.weight, std=0.1)
+            torch.nn.init.normal_(head.bias, std=0.1)
+        reid.eval(), comp.eval()
     weights = export_weights(reid, comp, cfg)
     write_lft(args.out / "weights.lft", weights)
     export_samples(reid, comp, cfg, args.out, args.samples)
