@@ -1,0 +1,31 @@
+# Paper-scale configuration for a CUDA machine on a full AV2 sensor split.
+run_name: trackpermanence_av2
+
+data:
+  root: data/processed
+
+occlusion:
+  max_hist_s: 2.5
+  min_gap_s: 1.5
+  max_gap_s: 12.5
+  max_future_s: 2.5
+  num_negatives: 16
+  pos_noise: 0.2
+  yaw_noise: 0.05
+  vel_noise: 0.3
+  rotate: true
+  min_path_m: 2.0   # sample histories only from moving tracks
+
+model:
+  d_model: 128
+  nhead: 8
+
+train:
+  epochs: 60
+  batch_size: 64
+  lr: 5.0e-4
+  weight_decay: 1.0e-4
+  grad_clip: 5.0
+  device: auto
+  seed: 0
+  num_workers: 4
